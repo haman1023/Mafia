@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>사자 피하기 게임 v0.1</title>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <style>
+      div{
+        text-align: center;
+      }
+
+      input[type="button"]{
+        margin : 5px;
+        width : 150px;
+        height : 50px;
+        background-color: lightblue;
+        font-size : 20px;
+      }
+
+      input[alt="start"]{
+        margin-left : 300px;
+        width : 100px;
+        height : 50px;
+        background-color: lightgreen;
+        font-size : 20px;
+      }
+
+      .main{
+        margin : 0 auto;
+        width : 500px;
+        height : 800px;
+        border : 1px solid black;
+      }
+
+      .screen{
+        margin : 50px auto;
+        margin-bottom : 0;
+        width : 400px;
+        border : 1px solid black;
+        border-bottom : 0px;
+        height : 480px;
+        overflow : hidden;
+      }
+
+      .player{
+        margin : 50px auto;
+        margin-top : 0;
+        width : 400px;
+        border : 1px solid black;
+        border-top : 0px;
+        height : 80px;
+      }
+
+      .empty{
+        width : 80px;
+        height : 80px;
+        float : left;
+        background-color: pink;
+      }
+
+      .enemy{
+        width : 80px;
+        height : 80px;
+      }
+
+      .playerEmpty{
+        width : 80px;
+        height : 80px;
+        float : left;
+        background-color: pink;
+      }
+
+      .playerDiv{
+        width : 80px;
+        height : 80px;
+        background-image: url('monkey.png');
+        background-repeat: no-repeat;
+        background-size: 80px 80px;
+      }
+    </style>
+    <script>
+      var intervalID;                     //  속도조절키
+      var gameSpeed = 500;                //  게임 속도
+      var gameScore = 0;                  //  게임 점수
+      var isPlayGame = false;             //  게임중 알람 flag
+      var screenArray = new Array();      //  적위치 저장 배열
+      var playerArray = [0,0,1,0,0];      //  기본 플레이어 위치
+      var emptyDiv = '<div class="empty"></div>'; //  적이 없는 공간
+      var enemyDiv = '<div class="empty"><img class="enemy" src="lion.png"/></div>';    //  적이 있는 공간
+
+      $(function(){
+        //  시작버튼 클릭
+        $("input[alt='start']").click(function(){
+          if(!isPlayGame){
+            startGame();
+            playerMove();
+            $(".screen").empty();
+            intervalID = window.setInterval(playGame,gameSpeed);
+          }else{
+            alert("이미 게임이 실행 중입니다.");
+          }
+        });
+
+        //  왼쪽 버튼 클릭
+        $("input[alt='left']").click(function(){
+          if(isPlayGame){
+            playerMove('left');
+          }
+        });
+
+        //  오른쪽 버튼 클릭
+        $("input[alt='right']").click(function(){
+          if(isPlayGame){
+            playerMove('right');
+          }
+        });
+
+        //  좌, 우 방향키 키다운 시
+        document.onkeydown = function(event){
+          if(event.keyCode == 37){
+            if(isPlayGame){
+              playerMove('left');
+            }
+          }else if(event.keyCode == 39){
+            if(isPlayGame){
+              playerMove('right');
+            }
+          }
+        };
+
+      });
+
+//    게임을 시작하면서 각종 스탯 초기화
+      function startGame(){
+        isPlayGame = true;    //  게임 시작 알림 플래그
+        gameScore = 0;        //  점수 초기화
+        gameSpeed = 500;      //  게임 속도 초기화
+
+        //  적위치 초기화
+        for(var i = 0; i < 7; i++){
+          screenArray[i] = new Array();
+          for(var j = 0; j < 5; j++){
+            screenArray[i][j] = 0;
+          }
+        }
+      }
+
+// 주인공 무브
+      function playerMove(move){
+
+        if(move == 'left'){
+          //  왼쪽으로 움직일때
+          for(var i = 0; i<5; i++){
+            if(playerArray[i] == 1){
+
+              $(".playerEmpty").each(function(index){
+                if(playerArray[index]==1){
+                  $(this).removeClass("playerDiv");
+                }
+              });
+
+              if(i!=0){
+                playerArray[i-1] = 1;
+                playerArray[i] = 0
+              }
+            }
+          }
+        }else if(move == 'right'){
+          //  오른쪽으로 움직일때
+          for(var i = 4; i>-1; i--){
+            if(playerArray[i] == 1){
+
+              $(".playerEmpty").each(function(index){
+                if(playerArray[index]==1){
+                  $(this).removeClass("playerDiv");
+                }
+              });
+
+              if(i!=4){
+                playerArray[i+1] = 1;
+                playerArray[i] = 0
+              }
+            }
+          }
+        }
+
+        $(".playerEmpty").each(function(index){
+          if(playerArray[index]==1){
+            $(this).addClass("playerDiv");
+          }
+        });
+      }
+
+//    게임실행
+      function playGame(){
+
+        gameScore += 10;    //  적이 하나 생성 될 때 마다 점수 10점 증가
+
+        //  300점 마다 게임 스피드 상승
+        if((gameScore%300 == 0)){
+          if(gameSpeed > 100){
+            window.clearTimeout(intervalID);
+            gameSpeed -= 100;
+            intervalID = window.setInterval(playGame,gameSpeed);
+          }else if(gameSpeed > 10){
+            window.clearTimeout(intervalID);
+            gameSpeed -= 30;
+            intervalID = window.setInterval(playGame,gameSpeed);
+          }
+        }
+        // console.log(gameSpeed);
+
+        //  적 위치좌표 랜덤 생성
+        var randomNum = Math.floor(Math.random() * 5);
+
+        //  적 위치좌표 재조정
+        for(var i = 0; i<6; i++){
+          for(var j = 0; j<5; j++){
+            screenArray[6-i][j] = screenArray[5-i][j];
+          }
+        }
+
+        //  적 생성
+        for(var i = 0; i<5;i++){
+          console.log(randomNum);
+          if(randomNum == i){
+              $(".screen").prepend(enemyDiv);
+              screenArray[0][4-i] = 1;
+          }else{
+              $(".screen").prepend(emptyDiv);
+              screenArray[0][4-i] = 0;
+          }
+        }
+
+        //  적과 위치 비교
+        for(var i = 0; i<5; i++){
+          if(screenArray[6][i] == 1){
+            if(screenArray[6][i] == playerArray[i]){
+              window.clearTimeout(intervalID);
+              isPlayGame = false;
+              alert("Game Over!!!!! \n 최종점수 : " + gameScore);
+            }
+          }
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="screen"></div>
+      <div class="player">
+        <div class="playerEmpty"></div>
+        <div class="playerEmpty"></div>
+        <div class="playerEmpty"></div>
+        <div class="playerEmpty"></div>
+        <div class="playerEmpty"></div>
+      </div>
+      <div class="">
+        <input type="button" alt="start" value="Start"/><br/>
+        <input type="button" alt="left" value="◀"/>
+        <input type="button" alt="right" value="▶"/>
+      </div>
+
+    </div>
+
+  </body>
+</html>

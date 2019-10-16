@@ -1,0 +1,104 @@
+div{
+  border: 1px solid black;
+  border-spacing: 0;
+}
+
+#wrap{
+  width:1000px;
+  height:700px;
+  background-color: lightgreen;
+}
+
+#mainDiv{
+  margin:10px 5px 5px 10px;
+  width:682px;
+  height:382px;
+  background-color: pink;
+  float: left;
+}
+#mainDiv .user_list{
+  border: 0px;
+  border-right:1px solid black;
+  width:130px;
+  height:382px;
+  float: left;
+}
+#mainDiv .main_chat{
+  border:0;
+  width:551px;
+  height:350px;
+  float: left;
+}
+#mainDiv .main_input{
+  border: 0px;
+  border-top: 1px solid black;
+  width:551px;
+  height:31px;
+  float: left;
+}
+
+#subDiv{
+  margin:10px 10px 5px 5px;
+  width:282px;
+  height:382px;
+  background-color: skyblue;
+  float: left;
+}
+#subDiv .sub_chat{
+  width:282px;
+  height:350px;
+  border:0px;
+}
+#subDiv .sub_input{
+  border:0px;
+  border-top: 1px solid black;
+  width:282px;
+  height:31px;
+}
+
+#functionDiv{
+  margin:5px 5px 10px 10px;
+  width:782px;
+  height:282px;
+  background-color:white;
+  float: left;
+}
+#functionDiv #vote{
+  border:0;
+  width:564px;
+  height:282px;
+  float : left;
+}
+#functionDiv #vote .user{
+  border:0;
+  width:94px;
+  height:94px;
+  background-image: url('../img/monkey.png');
+  background-size: 100%;
+  background-repeat: no-repeat;
+  opacity: 50%;
+  float : left;
+}
+#functionDiv #function{
+  border:0;
+  width:218px;
+  height:282px;
+  background-color: lightgray;
+  float : left;
+}
+#functionDiv #function .button{
+  margin : 5px;
+  width:208px;
+  height:100px;
+}
+
+#informationDiv{
+  margin:5px 10px 10px 5px;
+  width:182px;
+  height:282px;
+  background-color: yellow;
+  float: left;
+}
+#informationDiv table{
+  margin: 0 auto;
+}
