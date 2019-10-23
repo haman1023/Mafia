@@ -15,6 +15,7 @@ socket.on('connect', () => {
 
 /* 서버로부터 데이터를 받은 경우 */
 socket.on('update', (data) => {
+	console.log(data);
 	/* 채팅에 필요한 부분 생성*/
 	const chatWindow = document.querySelector('.main_chat');
 

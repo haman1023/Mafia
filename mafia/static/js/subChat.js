@@ -8,6 +8,8 @@ socket.on('joinRoom', (name) => {
 	const subChatBox = document.querySelector('.sub_chat');
 	const subChatLine = document.createElement('div');
 	const subNode = document.createTextNode(`${name}님이 접속하였습니다.`);
+	subChatLine.classList.add('login');
+
 
 	subChatLine.appendChild(subNode);
 	subChatBox.appendChild(subChatLine);
@@ -19,9 +21,21 @@ socket.on('subOtherMessage', (data) => {
 	const subChatLine = document.createElement('div');
 	const subNode = document.createTextNode(`${data.name}: ${data.subMessage}`);
 
+	subChatLine.classList.add('other');
 	subChatLine.appendChild(subNode);
 	subChatWindow.appendChild(subChatLine);
 
+})
+
+socket.on('leaveSubRoom', (data) => {
+	console.log(data.message);
+	const subChatWindow = document.querySelector('.sub_chat');
+	const subChatLine = document.createElement('div');
+	const subNode = document.createTextNode(`${data.name} ${data.subOutMessage}`);
+
+	subChatLine.classList.add('logout');
+	subChatLine.appendChild(subNode);
+	subChatWindow.appendChild(subChatLine);
 })
 
 
@@ -37,14 +51,14 @@ function subSend() {
 	const subChatLine = document.createElement('div');
 	const subNode = document.createTextNode(subMessage);
 
-	// subChatLine.classList.add('my')
+	subChatLine.classList.add('my')
 	subChatLine.appendChild(subNode);
 	subChatWindow.appendChild(subChatLine);
 
 	
 
 	// 서버로 subChatRoom의 subMessage 이벤트, 데이터 전달
-	socket.emit('subMessage', {type: 'subMessage', subMessage: subMessage});
+	socket.emit('subMessage', {type: 'mySubMessage', subMessage: subMessage});
 
 	// 데이터 가져온 뒤 빈 칸으로 만들기
 	document.querySelector('.sub_chat_text').value = "";

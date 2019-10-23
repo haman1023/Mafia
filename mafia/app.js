@@ -89,12 +89,7 @@ io.on('connection', (socket) => {
 		socket.broadcast.emit('update', data);
 	})
 
-	/* 접속 종료 */
-	socket.on('disconnect', ()=>{
-		console.log(`${socket.name} 님이 나가셨습니다.`)
-		/* 나가는 사람을 제외한 나머지 유저에게 메시지 전송 */
-		socket.broadcast.emit('update', {type: 'disconnect', name: 'SERVER', message: `${socket.name} 님이 나가셨습니다.`});
-	})
+	
 
 	socket.on('subMessage', (data) => {
 		
@@ -103,6 +98,17 @@ io.on('connection', (socket) => {
 		console.log(data);
 
 		socket.broadcast.to(chattingRoom[1]._id).emit('subOtherMessage', data);
+	})
+	/* 접속 종료 */
+	socket.on('disconnect', ()=>{
+		console.log(`${socket.name} 님이 나가셨습니다.`)
+		/* 나가는 사람을 제외한 나머지 유저에게 메시지 전송 */
+		socket.broadcast.emit('update', {type: 'disconnect', name: 'SERVER', message: `${socket.name} 님이 나가셨습니다.`});
+		socket.broadcast.to(chattingRoom[1]._id).emit('leaveSubRoom', {type: 'logout', name: socket.name, subOutMessage: `님이 나가셨습니다.`});
+		socket.leave(chattingRoom[1]._id);
+		console.log(userList);
+		userList.splice(userList.indexOf(socket.name),1);
+		io.sockets.emit('initUserList', {list:userList});
 	})
 
 });
