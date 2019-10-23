@@ -10,24 +10,19 @@
   <body>
     <div id='wrap'>
       <div id='mainDiv'>
-        <div class="user_list">
-          유저목록
-          <!-- <script src="./js/userList.js"></script> -->
-        </div>
+        <div class="user_list"></div>
         <div class="main_chat"></div>
         <div class="main_input">
           <input type="text" class="main_chat_text">
           <button class="main_chat_send" onclick="send()">입력</button>
 				</div>
-				<script src="./js/mainChat.js"></script>
       </div>
       <div id='subDiv'>
-        <div class="sub_chat">서브 채팅</div>
+        <div class="sub_chat"></div>
         <div class="sub_input">
             <input type="text" class="sub_chat_text">
-            <button class="sub_chat_send" onclick="send()">입력</button>
+            <button class="sub_chat_send" onclick="subSend()">입력</button>
         </div>
-        <!-- <script src="./js/subChat.js"></script> -->
       </div>
       <div id='functionDiv'>
         <div id='vote'>
@@ -89,5 +84,8 @@
         </table>
       </div>
     </div>
+    <script src="./js/mainChat.js"></script>
+    <script src="./js/userList.js"></script>
+    <script src="./js/subChat.js"></script>
   </body>
 </html>

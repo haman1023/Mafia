@@ -43,11 +43,12 @@ socket.on('update', (data) => {
 	chatWindow.appendChild(chatLine);
 });
 
+
 /* 메시지 전송 함수 */
 function send() {
+	
 	//입력데이터 갖오기
-	let message = document.querySelector('.main_chat_text').value;
-
+	const message = document.querySelector('.main_chat_text').value;
 	
 
 	// 내가 전송할 메시지 클라이언트에 표시 
@@ -65,5 +66,5 @@ function send() {
 	socket.emit('message', {type: 'message', message: message});
 
 	// 데이터 가져온 뒤 빈 칸으로 만들기
-	message = '';
+	document.querySelector('.main_chat_text').value = "";
 }

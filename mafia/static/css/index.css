@@ -28,6 +28,7 @@ div{
   width:551px;
   height:350px;
   float: left;
+  overflow-y: auto;
 }
 
 .login {
@@ -35,7 +36,6 @@ div{
   text-align: center;
   width: 90%;
   margin: 5px auto;
-  overflow-y: auto;
   background-color: chartreuse;
   clear: both;
 }
@@ -85,6 +85,7 @@ div{
   width:282px;
   height:350px;
   border:0px;
+  overflow-y: auto;
 }
 #subDiv .sub_input{
   border:0px;
