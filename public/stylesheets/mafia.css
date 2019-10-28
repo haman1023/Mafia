@@ -1,0 +1,146 @@
+div{
+  border: 1px solid black;
+  border-spacing: 0;
+}
+
+#wrap{
+  width:1000px;
+  height:700px;
+  background-color: lightgreen;
+}
+
+#mainDiv{
+  margin:10px 5px 5px 10px;
+  width:682px;
+  height:382px;
+  background-color: pink;
+  float: left;
+  font-size: 13px;
+}
+#mainDiv .user_list{
+  border: 0px;
+  border-right:1px solid black;
+  width:90px;
+  height:382px;
+  float: left;
+  overflow: auto;
+}
+#mainDiv .main_chat{
+  border:0;
+  width:591px;
+  height:350px;
+  overflow: auto;
+}
+#mainDiv .main_chat #main_content{
+  border:0;
+  padding-left: 5px;
+  width:586px;
+  height:350px;
+  overflow: auto;
+}
+#mainDiv .main_input{
+  border: 0px;
+  border-top: 1px solid black;
+  width:591px;
+  height:31px;
+  float: left;
+}
+#mainDiv .main_input #main_data{
+  border: 0px;
+  margin:0;
+  width:540px;
+  height:29px;
+  overflow:hidden;
+}
+#mainDiv .main_input #main_datasend{
+  margin:-6px;
+  border: 0px;
+  width:52px;
+  height:31px;
+}
+
+#subDiv{
+  margin:10px 10px 5px 5px;
+  width:282px;
+  height:382px;
+  background-color: skyblue;
+  float: left;
+  font-size: 13px;
+}
+#subDiv .sub_chat{
+  width:282px;
+  height:350px;
+  border:0px;
+}
+#subDiv .sub_chat #sub_content{
+  width:282px;
+  height:350px;
+  border:0px;
+  overflow: auto;
+}
+#subDiv .sub_input{
+  border:0px;
+  border-top: 1px solid black;
+  width:282px;
+  height:31px;
+}
+#subDiv .sub_input #sub_data{
+  margin:0;
+  border: 0px;
+  width:231px;
+  height:29px;
+  overflow:hidden;
+}
+#subDiv .sub_input #sub_datasend{
+  margin:-6px;
+  border: 0px;
+  width:52px;
+  height:31px;
+}
+
+#functionDiv{
+  margin:5px 5px 10px 10px;
+  width:782px;
+  height:282px;
+  background-color:white;
+  float: left;
+}
+#functionDiv #vote{
+  border:0;
+  width:564px;
+  height:282px;
+  float : left;
+}
+#functionDiv #vote .user{
+  border:0;
+  width:94px;
+  height:94px;
+  background-image: url('images/mafia.jpg');
+  background-size: 100%;
+  background-repeat: no-repeat;
+  opacity: 50%;
+  float : left;
+}
+#functionDiv #function{
+  border:0;
+  width:218px;
+  height:282px;
+  background-color: lightgray;
+  float : left;
+}
+#functionDiv #function .button{
+  margin : 5px;
+  width:208px;
+  height:100px;
+}
+
+#informationDiv{
+  margin:5px 10px 10px 5px;
+  width:182px;
+  height:282px;
+  background-color: yellow;
+  float: left;
+}
+#informationDiv table{
+  margin: 0 auto;
+}

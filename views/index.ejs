@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title><%= title %></title>
+  <meta name="robots" content="noindex, nofollow" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta http-equiv="Cache-Control" content="No-Cache" />
+  <meta http-equiv="Pragma" content="No-Cache" />
+  <script src="/javascript/jquery-1.9.1.js"></script>
+  <script src="/javascript/jquery-ui-1.10.3.custom.min.js"></script>
+  <script src="/javascript/jquery.cookie.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <link rel="stylesheet" href="stylesheets/mafia.css">
+  <script>
+    //  접속
+    var socket = io.connect();
+    socket.on('connect', function() {
+      var user = prompt("닉네임을 입력해주세요");
+      var grade = prompt("등급을 입력해주세요", "1,2,3만 가능");
+      socket.emit('guestjoin', user, grade);
+    });
+
+    //  똑같은 아이디 경고메세지
+    socket.on('existID', function() {
+      alert("이미 존재하는 닉네임 입니다.");
+      alert("익명으로 입장합니다.");
+    });
+
+    //  메인채팅창 메세지 뿌리기
+    socket.on('recvCitizenmsg', function(username, data) {
+      var mainChatContent = document.getElementById("main_content");
+      var user = document.createTextNode(username + " : " + data);
+      var brTag = document.createElement("BR");
+      mainChatContent.appendChild(user);
+      mainChatContent.appendChild(brTag);
+      if ($('#main_content').prop('scrollHeight') > $('.main_chat').height())
+        $('.main_chat').scrollTop($('.main_chat').prop('scrollHeight'));
+    });
+
+    //  서브채팅창 메세지 뿌리기
+    socket.on('recvSubmsg', function(username, data) {
+      var subChatContent = document.getElementById("sub_content");
+      var user = document.createTextNode(username + " : " + data);
+      var brTag = document.createElement("BR");
+      subChatContent.appendChild(user);
+      subChatContent.appendChild(brTag);
+      if ($('#sub_content').prop('scrollHeight') > $('.sub_chat').height())
+        $('.sub_chat').scrollTop($('.sub_chat').prop('scrollHeight'));
+    });
+
+    //  메인채팅창 공지사항 뿌리기
+    socket.on('mainnoti', function(col, data) {
+      $('#main_content').append('<b><font color=' + col + '>' + data + '</font></b><br>');
+      if ($('#main_content').prop('scrollHeight') > $('.main_chat').height())
+        $('.main_chat').scrollTop($('.main_chat').prop('scrollHeight'));
+    });
+
+    //  서브채팅창 공지사항 뿌리기
+    socket.on('subnoti', function(col, data) {
+      $('#sub_content').append('<b><font color=' + col + '>' + data + '</font></b><br>');
+      if ($('#sub_content').prop('scrollHeight') > $('.sub_chat').height())
+        $('.sub_chat').scrollTop($('.sub_chat').prop('scrollHeight'));
+    });
+
+    //  메인 채팅창 유저목록 뿌리기
+    socket.on('updateuser', function(usernames) {
+      $('.user_list').empty();
+      $.each(usernames, function(key, value) {
+        $('.user_list').append('<div style="border:0;">' + value + '</div>');
+      });
+    });
+
+    //  메인 채팅 클릭 or 엔터
+    $(function() {
+      $('#main_data').keypress(function(e) {
+        if (e.which == 13) {
+          $(this).blur();
+          $('#main_datasend').focus().click();
+          $('#main_data').focus();
+        }
+      });
+
+      $('#main_datasend').click(function() {
+        var message = $('#main_data').val();
+        $('#main_data').val('');
+        if(message != ''){
+          socket.emit('sendCitizenmsg', message);
+        }
+      });
+    });
+
+    //  서브 채팅 클릭 or 엔터
+    $(function() {
+      $('#sub_data').keypress(function(e) {
+        if (e.which == 13) {
+          $(this).blur();
+          $('#sub_datasend').focus().click();
+          $('#sub_data').focus();
+        }
+      });
+
+      $('#sub_datasend').click(function() {
+        var message = $('#sub_data').val();
+        $('#sub_data').val('');
+        if(message != ''){
+          socket.emit('sendSubmsg', message);
+        }
+      });
+    });
+  </script>
+</head>
+
+<body>
+  <div id="wrap">
+    <div id="mainDiv">
+      <div class="user_list"></div>
+      <div class="main_chat">
+        <div id="main_content"></div>
+      </div>
+      <div  class="main_input">
+        <input id="main_data"/>
+        <input type="button" id="main_datasend" value="send" />
+      </div>
+    </div>
+    <div id='subDiv'>
+      <div class="sub_chat">
+        <div id="sub_content"></div>
+      </div>
+      <div class="sub_input">
+        <input id="sub_data"/>
+        <input type="button" id="sub_datasend" value="send" />
+      </div>
+    </div>
+    <div id='functionDiv'>
+      <div id='vote'>
+        <div class='user'></div>
+        <div class='user'></div>
+        <div class='user'></div>
+        <div class='user'></div>
+        <div class='user'></div>
+        <div class='user'></div>
+        <div class='user'></div>
+        <div class='user'></div>
+        <div class='user'></div>
+        <div class='user'></div>
+        <div class='user'></div>
+        <div class='user'></div>
+        <div class='user'></div>
+        <div class='user'></div>
+        <div class='user'></div>
+        <div class='user'></div>
+        <div class='user'></div>
+        <div class='user'></div>
+      </div>
+      <div id='function'>
+        <button class="button">투표시작</button>
+        기타 기능버튼들
+      </div>
+    </div>
+    <div id='informationDiv'>
+      <table>
+        <thead>
+          <tr>
+            <td colspan="2"><img src='/stylesheets/images/mafia.jpg' width='94px' height='94px' /></td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td width="50">ID</td>
+            <td width="100">userID</td>
+          </tr>
+          <tr>
+            <td>이름</td>
+            <td>userName</td>
+          </tr>
+          <tr>
+            <td rowspan="2">전적</td>
+            <td>10승 10패</td>
+          </tr>
+          <tr>
+            <td>(50%)</td>
+          </tr>
+          <tr>
+            <td rowspan="2">마피아</td>
+            <td>1승 1패</td>
+          </tr>
+          <tr>
+            <td>(50%)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+
+</html>
