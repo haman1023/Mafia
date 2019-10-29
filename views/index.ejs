@@ -20,7 +20,7 @@
     var socket = io.connect();
     socket.on('connect', function() {
       var user = prompt("닉네임을 입력해주세요");
-      var grade = prompt("등급을 입력해주세요", "1,2,3만 가능");
+      var grade = prompt("등급을 입력해주세요", "1:시민, 2:마피아");
       socket.emit('guestjoin', user, grade);
     });
 
@@ -28,6 +28,11 @@
     socket.on('existID', function() {
       alert("이미 존재하는 닉네임 입니다.");
       alert("익명으로 입장합니다.");
+    });
+
+    socket.on('setUser', function(name, room) {
+      socket.userName = name;
+      socket.room = room;
     });
 
     //  메인채팅창 메세지 뿌리기
@@ -85,8 +90,9 @@
       });
 
       $('#main_datasend').click(function() {
-        var message = $('#main_data').val();
-        $('#main_data').val('');
+        var mainChatData = document.getElementById('main_data');
+        var message = mainChatData.value;
+        mainChatData.value = "";
         if(message != ''){
           socket.emit('sendCitizenmsg', message);
         }
@@ -104,13 +110,30 @@
       });
 
       $('#sub_datasend').click(function() {
-        var message = $('#sub_data').val();
-        $('#sub_data').val('');
+        var subChatData = document.getElementById('sub_data');
+        var message = subChatData.value;
+        subChatData.value = "";
+
+        // $('#sub_data').val('');
         if(message != ''){
           socket.emit('sendSubmsg', message);
         }
       });
     });
+
+    //  죽는 키 클릭
+    $(function() {
+      $('#deadBtn').click(function() {
+        var mainChat = document.getElementById('main_data');
+  			mainChat.disabled = 'true';
+        var deadBtn = document.getElementsByClassName('deadBtn');
+  			deadBtn.disabled = 'true';
+        var subChat = document.getElementById('sub_content');
+        subChat.innerHTML = "";
+        socket.emit('deadBtnClick');
+      });
+    });
+
   </script>
 </head>
 
@@ -157,7 +180,7 @@
         <div class='user'></div>
       </div>
       <div id='function'>
-        <button class="button">투표시작</button>
+        <button id='deadBtn' class='button'>으앙 주금</button>
         기타 기능버튼들
       </div>
     </div>

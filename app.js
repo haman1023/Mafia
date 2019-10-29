@@ -70,9 +70,6 @@ io.sockets.on('connection', function (socket) {
 		if(grade=='2'){
 			mafiaUserNames[user]=true;
 			roomname = 'mafia';
-		}else if(grade=='3'){
-			deadUserNames[user]=true;
-			roomname = 'deadman';
 		}else{
 			roomname = 'citizen';
 		}
@@ -83,6 +80,9 @@ io.sockets.on('connection', function (socket) {
 		var username = confirmID(user);
 		var roomname = mafiaCheck(user, grade);
 
+		console.log(username+"("+roomname+")"+"님이 접속하였습니다.");
+		socket.emit('setUser', username, roomname);
+
 		//	모든 유저 접속(메인채팅방)
 		socket.username = username;
 		socket.room = roomname;
@@ -92,7 +92,6 @@ io.sockets.on('connection', function (socket) {
 
 		var userlist = new Array();
 		var mafialist = new Array();
-		var deadlist = new Array();
 
 		for (var name in usernames) {
 			userlist.push(usernames[name]);
@@ -111,33 +110,73 @@ io.sockets.on('connection', function (socket) {
 			socket.broadcast.to(roomname).emit('subnoti', 'red', username + ' has connected to Community');
 		}
 
-		//	죽은사람 일 경우
-		if (roomname=='deadman'){
-			deadUserNames[username] = username;
-			socket.join(roomname);
-			socket.emit('subnoti', 'red', 'you has connected DeadChat');
-
-			for (var name in deadUserNames) {
-				deadlist.push(deadUserNames[name]);
-			}
-
-			socket.broadcast.to(roomname).emit('subnoti', 'red', username + ' has connected to Community');
-		}
-
 		//	유저리스트 뿌리기
 		io.sockets.in(socket.room).emit('updateuser', userlist);
+
+		console.log("현재 접속 한 인원은 " + userlist.length + "명 입니다.");
 
 		//	접속 공지 뿌리기
 		socket.broadcast.to('citizen').emit('mainnoti', 'green', username + ' has connected to Citizen');
 	});
 
+
+	//	죽은사람 버튼 클릭
+	socket.on('deadBtnClick', function () {
+		var username = socket.username;
+		deadUserNames[username] = true;
+		deadUserNames[username] = username;
+
+		if(socket.room == 'mafia'){
+			socket.emit('subnoti', 'red', 'you are dead.');
+			socket.emit('mainnoti', 'red', 'you are dead.');
+			socket.broadcast.to(socket.room).emit('subnoti', 'red', username + ' is dead');
+			socket.broadcast.to('citizen').emit('mainnoti', 'red', username + '(Mafia) is dead');
+			socket.leave(socket.room);
+		}else{
+			socket.emit('subnoti', 'red', 'you are dead.');
+			socket.emit('mainnoti', 'red', 'you are dead.');
+			socket.broadcast.to('citizen').emit('mainnoti', 'green', username + '(Citizen) is dead');
+		}
+
+		var roomname = 'deadman';
+		socket.room = roomname;
+		socket.join(roomname);
+
+		var userlist = new Array();
+		var mafialist = new Array();
+		var deadlist = new Array();
+
+		// 산 사람
+		for (var name in usernames) {
+			userlist.push(usernames[name]);
+		}
+		//	마피아
+		for (var name in mafiaUserNames) {
+			mafialist.push(mafiaUserNames[name]);
+		}
+		//	죽은사람
+		for (var name in deadUserNames) {
+			deadlist.push(deadUserNames[name]);
+		}
+
+		var survivor = userlist.length - deadlist.length;
+		console.log(survivor);
+
+		socket.broadcast.to(roomname).emit('subnoti', 'red', username + ' is dead.');
+		socket.broadcast.to('citizen').emit('mainnoti', 'blue', survivor + ' Citizens('+ mafialist.length + ' Mafias) is survive.');
+	});
+
 	socket.on('disconnect', function(){
 		delete usernames[socket.username];
+		console.log(socket.username+"("+socket.room+")"+"님이 접속을 해제하였습니다.");
 		var userlist = new Array();
 		for (var name in usernames) {
 			userlist.push(usernames[name]);
 		}
 		io.sockets.emit('updateuser', userlist);
+
+		console.log("남은 접속 인원은 " + userlist.length + "명 입니다.");
+
 		socket.broadcast.emit('servernoti', 'red', socket.username + ' has disconnected');
 		socket.leave('citizen');
 		socket.leave(socket.room);
