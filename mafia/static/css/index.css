@@ -31,40 +31,6 @@ div{
   overflow-y: auto;
 }
 
-.login {
-  border: 0;
-  text-align: center;
-  width: 90%;
-  margin: 5px auto;
-  background-color: chartreuse;
-  clear: both;
-}
-
-.logout {
-  border: 0;
-  text-align: center;
-  width: 90%;
-  margin: 5px auto;
-  background-color: darkgray;
-  clear: both;
-}
-
-.my {
-  border: 0;
-  width: 70%;
-  margin: 5px;
-  float: right;
-  background-color: ivory;
-}
-
-.other {
-  border: 0;
-  width: 70%;
-  margin: 5px;
-  float: left;
-  background-color: lavender;
-}
-
 #mainDiv .main_input{
   border: 0px;
   border-top: 1px solid black;
@@ -72,7 +38,6 @@ div{
   height:31px;
   float: left;
 }
-
 
 #subDiv{
   margin:10px 10px 5px 5px;
@@ -111,10 +76,10 @@ div{
   border:0;
   width:94px;
   height:94px;
-  background-image: url('../img/monkey.png');
+  background-image: url('../img/mafia.jpg');
   background-size: 100%;
   background-repeat: no-repeat;
-  opacity: 50%;
+  opacity: 0.5;
   float : left;
 }
 #functionDiv #function{
@@ -124,7 +89,7 @@ div{
   background-color: lightgray;
   float : left;
 }
-#functionDiv #function .button{
+#functionDiv #function .voteButton{
   margin : 5px;
   width:208px;
   height:100px;
@@ -139,4 +104,38 @@ div{
 }
 #informationDiv table{
   margin: 0 auto;
+}
+
+.login {
+  border: 0;
+  text-align: center;
+  width: 90%;
+  margin: 5px auto;
+  background-color: chartreuse;
+  clear: both;
+}
+
+.logout {
+  border: 0;
+  text-align: center;
+  width: 90%;
+  margin: 5px auto;
+  background-color: darkgray;
+  clear: both;
+}
+
+.my {
+  border: 0;
+  width: 70%;
+  margin: 5px;
+  float: right;
+  background-color: ivory;
+}
+
+.other {
+  border: 0;
+  width: 70%;
+  margin: 5px;
+  float: left;
+  background-color: lavender;
 }
