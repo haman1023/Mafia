@@ -8,6 +8,8 @@ socket.on('userList', (data)=>{
 	while(listBox.hasChildNodes()){
 		listBox.removeChild(listBox.firstChild)
 	}
+
+
 	// 연결 상태일 때만 표시하게끔
 	for(let i=0;i<userList.length;i++){
 		const listLine = document.createElement('div');

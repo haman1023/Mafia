@@ -118,11 +118,14 @@ io.sockets.on('connection', (socket)=>{
 		// 아이디 중복 체크
 		// console.log(loadedUserName);
 		const userNameChecked = confirmID(loadedUserName);
+		socket.name=userNameChecked
 		// console.log(userNameChecked);
 		// 역할군 및 리스트에 넣어주기
 		const roomName = roleSelect(userNameChecked, role);
+		socket.room=roomName;
 		console.log(userList);
 		console.log(roomName);
+		
 
 		// 각 방의 접속자 리스트
 		// const onUserList = [];
@@ -154,7 +157,16 @@ io.sockets.on('connection', (socket)=>{
 
 	});
 
-	//
+	//메시지 관련 처리
+	socket.on('sendMsg',(data)=>{
+		console.log(data);
+		// 메인 메시지 일 경우 자기 빼고 다 전달
+		if(data.type=='mainMsg'){
+			console.log(data.message);
+			socket.broadcast.emit('mainMsg', {name: socket.name, message: data.message});
+		}
+
+	});
 
 
 
@@ -171,108 +183,9 @@ io.sockets.on('connection', (socket)=>{
 
 	});
 
-	// 
 
 
 });
-
-
-
-// // serverSocket에 연결되었을 때
-// io.sockets.on('connection', (socket)=>{
-	
-// 	
-
-// 	
-
-// 	// 접속 체크 
-// 	socket.on('reqJoin', (userName, role)=>{
-// 		// 아이디 중복 체크 및 들어갈 방 이름 정해주기
-// 		const userNameChecked = confirmID(userName);
-// 		console.log(userNameChecked);
-// 		const roomName = roleCheck(userName, role);
-// 		console.log(roomName);
-		
-// 		// 메인 채팅 방 (모든 유저들 대상)
-// 		socket.userName = userNameChecked;
-// 		socket.room = roomName;
-// 		userList[userNameChecked] = userNameChecked;
-// 		socket.join('citizen');
-// 		// 1은 연결되었을 때를 뜻함. 
-// 		socket.emit('mainNotice', 1, 'you has connected Citizen-Chat');
-
-// 		// 각 채팅방 접속자 목록
-// 		let onUserList = new Array();
-// 		let onMafiaUserList = new Array();
-// 		let onDeadUserList = new Array();
-		
-// 		// userList의 유저들을 전부 접속한 유저 목록에 집어넣기
-// 		for(let user in userList){
-// 			onUserList.push(userList[user]);
-// 		}
-
-// 		// 다른 역할들 중 마피아
-// 		if(roomName=='mafia'){
-// 			mafiaUserList[userNameChecked] = userNameChecked;
-// 			socket.join(roomName);
-// 			// 자기 자신에게 알려줌
-// 			socket.emit('subNotice', 1, 'you has connected Mafia-Community');
-// 			// 마피아 접속 유저들 전부 마피아 접속자 목록에 집어넣기
-// 			for(let user in mafiaUserList){
-// 				onMafiaUserList.push(mafiaUserList[user]);
-// 			}
-// 			// 그사람 제외하고 모든 사람들에게 공지
-// 			socket.broadcast.to(roomName).emit('subNotice', 1, userNameChecked + ' has connected to Community');
-// 		}
-
-// 		// 시체들일 경우
-// 		if(roomName=='tomb'){
-// 			deadUserList[userNameChecked] = userNameChecked;
-// 			socket.join(roomName);
-// 			// 자기 자신에게 알려줌
-// 			socket.emit('subNotice', 'red', 'you has connected tomb');
-// 			// 현재 시체 목록에 집어넣기
-// 			for(let user in deadUserList){
-// 				onDeadUserList.push(deadUserList[user]);
-// 			}
-// 			// 그 사람을 제외하고 다른 사람에게 공지
-// 			socket.broadcast.to(roomName).emit('subNotice', 1, userNameChecked + ' has connected to Community');
-// 		}
-
-// 		// 새로 들어왔을 유저에게 유저 리스트 뿌리기
-// 		io.sockets.in(socket.room).emit('updateUser', onUserList);
-
-// 		// 그 사람을 제외하고 접속했다는 공지 뿌리기 1
-// 		socket.broadcast.to('citizen').emit('mainNotice', 1, userNameChecked + ' has connected to Citizen');
-
-		
-// 	});
-
-// 	// 유저의 접속이 끊어졌을 때
-// 	socket.on('disconnect', ()=>{
-// 		// 접속자 목록에서 삭제
-		
-// 		const idx = userList.indexOf(socket.userName)
-// 		if(idx > -1) userList.splice(idx,1);
-// 		// 새 유저 목록 작성해서 남은 사람들 넣기
-// 		const upUserList = new Array();
-// 		for(let name in userList){
-// 			upUserList.push(userList[name]);
-// 		}
-// 		// 변경된 유저 리스트 뿌리기
-// 		io.sockets.emit('updateUserList', upUserList);
-// 		// 나머지 사람에게 알려주기 0은 연결 종료
-// 		socket.broadcast.emit('mainNotice', 0, `${socket.userName} has disconnected`);
-// 		// 시민이 아닌 경우에만 각 그룹에 날려주기하면 될듯?
-// 		if()
-// 		socket.broadcast.to(socket.room).emit('subNotice', 0, `${socket.userName} has disconnected`);
-// 		// 방에서 나가기
-// 		socket.leave('citizen');
-// 		socket.leave(socket.room);
-
-// 	})
-	
-// });
 
 
 /* 서버를 8080 포트로 listen */
