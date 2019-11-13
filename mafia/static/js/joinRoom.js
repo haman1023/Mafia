@@ -14,3 +14,6 @@ socket.on('connect', ()=>{
 socket.on('alreadyID', (noName)=>{
 	alert(`이미 존재하는 닉네임입니다.\n ${noName}으로 입장합니다.`)
 })
+socket.on('setName', (data)=>{
+	socket.name=data;
+});

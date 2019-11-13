@@ -72,7 +72,7 @@ div{
   height:282px;
   float : left;
 }
-#functionDiv #vote .user{
+.user{
   border:0;
   width:94px;
   height:94px;
@@ -82,6 +82,33 @@ div{
   opacity: 0.5;
   float : left;
 }
+
+.user:hover{
+  opacity: 1.0;
+  cursor: pointer;
+}
+.selectedUser{
+  border:0;
+  width:94px;
+  height:94px;
+  background-image: url('../img/mafia.jpg');
+  background-size: 100%;
+  background-repeat: no-repeat;
+  opacity: 1.0;
+  float : left;
+}
+
+.undead {
+  border:0;
+  width:94px;
+  height:94px;
+  background-image: url('../img/undead.jpg');
+  background-size: 100%;
+  background-repeat: no-repeat;
+  opacity: 0.5;
+  float : left;
+}
+
 #functionDiv #function{
   border:0;
   width:218px;

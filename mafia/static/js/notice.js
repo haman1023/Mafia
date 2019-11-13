@@ -1,7 +1,6 @@
 // 메인 채팅 창 공지사항 뿌리기
 socket.on('mainNotice', (data)=>{
 	console.log(data);
-	socket.userName = data.userName;
 	// 관련 변수 설정
 	const mainChat = document.querySelector('.main_chat');
 	const chatLine = document.createElement('div');
@@ -11,24 +10,47 @@ socket.on('mainNotice', (data)=>{
 	switch (data.conn) {
 		// 접속함
 		case 1:
-			className = 'login';
-			node = document.createTextNode(`${data.userName} 님이 접속했습니다.`);
+			// 유령 아닐 때만
+			if(data.role!='3'){
+				className = 'login';
+				node = document.createTextNode(`${data.userName} 님이 접속했습니다.`);
+				// 공지 형성
+				chatLine.classList.add(className);
+				chatLine.appendChild(node);
+				mainChat.appendChild(chatLine);
+			}
 			break;
 		// 접속 끊김
 		case 0:
 			className = 'logout'
 			node = document.createTextNode(`${data.userName} 님이 나가셨습니다.`);
+			// 공지 형성
+			chatLine.classList.add(className);
+			chatLine.appendChild(node);
+			mainChat.appendChild(chatLine);
 			break;
 	}
+	// 접속 중일 때만
+	if(data.conn==1){
+		// role 이 시체가 되었을 때도 표시하기 
+		switch (data.role) {
+			// 시체되었을 때
+			case '3':
+				className = 'logout'
+				node = document.createTextNode(`${data.userName} 님이 사망하셨습니다.`);
+				const deadChatLine = document.createElement('div');
+				// 공지 형성
+				deadChatLine.classList.add(className);
+				deadChatLine.appendChild(node);
+				mainChat.appendChild(deadChatLine);
+				break;
+		}
+	}
 	
-	// 공지 형성
-	chatLine.classList.add(className);
-	chatLine.appendChild(node);
-	mainChat.appendChild(chatLine);
 });
 // 서브 채팅 방 공지 올리기
 socket.on('subNotice', (data)=>{
-	console.log(socket.userName);
+	console.log(data);
 	const subChat = document.querySelector('.sub_chat');
 	const chatLine = document.createElement('div');
 	let className = "login";
@@ -51,6 +73,10 @@ socket.on('subNotice', (data)=>{
 	subChat.appendChild(chatLine);
 });
 	
-
+// 스크롤 밑으로 
+function gotoBottom(cls){
+	const element = document.querySelector("."+cls);
+	element.scrollTop = element.scrollHeight-element.clientHeight;
+}
 
 

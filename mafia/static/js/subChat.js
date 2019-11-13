@@ -1,6 +1,6 @@
 // 관련 변수 들고 오기
-const mainChatText = document.querySelector(".main_chat_text");
-const mainChatSend = document.querySelector(".main_chat_send");
+const subChatText = document.querySelector(".sub_chat_text");
+const subChatSend = document.querySelector(".sub_chat_send");
 
 // 스크롤 밑으로 
 function gotoBottom(cls){
@@ -9,38 +9,37 @@ function gotoBottom(cls){
 }
 
 // 엔터로 메시지 보내기
-function keySendMessage(key){
+function keySendSubMessage(key){
 	if(key.keyCode==13){
-		sendMessage();
-		mainChatText.focus();
+		sendSubMessage();
 	}
 }
 
-function sendMessage(event){
+function sendSubMessage(event){
 	// 메시지 가져오기
-	const message = mainChatText.value;
+	const message = subChatText.value;
 	// 내가 전송한 메시지 채팅창에 표시
-	const chatWindow = document.querySelector('.main_chat');
+	const chatWindow = document.querySelector('.sub_chat');
 	const chatLine = document.createElement('div');
 	const node = document.createTextNode(`나 : ${message}`);
 
 	chatLine.classList.add('my')
 	chatLine.appendChild(node);
 	chatWindow.appendChild(chatLine);
-	// // 스크롤 밑으로
-	gotoBottom('.main_chat');
 
+	// // 스크롤 밑으로
+	gotoBottom('.sub_chat');
 
 	// 서버로 메시지와 필요 데이터 전달
-	socket.emit('sendMsg', {type: 'mainMsg', message: message});
+	socket.emit('sendMsg', {type: 'subMsg', message: message});
 
 	// 입력창 비우기
-	document.querySelector('.main_chat_text').value="";
+	document.querySelector('.sub_chat_text').value="";
 
 }
 // 메시지 받아서 표시
-socket.on('mainMsg', (data)=>{
-	const chatWindow = document.querySelector('.main_chat');
+socket.on('subMsg', (data)=>{
+	const chatWindow = document.querySelector('.sub_chat');
 	const chatLine = document.createElement('div');
 	const node = document.createTextNode(`${data.name} : ${data.message}`);
 
@@ -50,10 +49,8 @@ socket.on('mainMsg', (data)=>{
 })
 
 function init(){
-	mainChatText.focus();
-	mainChatText.addEventListener('keydown',keySendMessage);
-	mainChatSend.addEventListener('click',sendMessage);
+	subChatText.addEventListener('keydown',keySendSubMessage);
+	subChatSend.addEventListener('click',sendSubMessage);
 }
 
 init();
-
