@@ -44,9 +44,12 @@ let unknownUserCount = 0;
 let mafiaUserList = [];
 // 시체 유저 목록
 let deadUserList = [];
-
+// 접속자 수 
+let onPlayer = 0;
 // 닉네임 : 아이디 객체 생성
 const idList = {};
+// 투표 카운트
+let voteCount = 0;
 
 // 닉네임으로 그 값을 가지고 있는 배열 안에 있는 객체를 찾는 함수
 function searchValue(nameValue, anyArray){
@@ -92,22 +95,22 @@ io.sockets.on('connection', (socket)=>{
 	function roleSelect(userName, role){
 		// 기본 1 시민 
 		if(role=='1'){
-			let player = { userName: userName, role: role, conn: 1 };
+			let player = { userName: userName, role: role, conn: 1, vote: 0 };
 			userList.push(player);
 			roomName = 'citizen';
 		// 2 마피아
 		}else if(role=='2'){
-			let player = { userName: userName, role: role, conn: 1 };
+			let player = { userName: userName, role: role, conn: 1, vote: 0 };
 			userList.push(player);
 			roomName = 'mafia';
 		// 3 시체	
 		}else if(role=='3'){
-			let player = { userName: userName, role: role, conn: 1 };
+			let player = { userName: userName, role: role, conn: 1, vote: 0 };
 			userList.push(player);
 			roomName = 'tomb';
 		// 현재는 나머지를 다 시민으로 설정해줄 것. 차후 업데이트 예정
 		}else{
-			let player = { userName: userName, role: '1', conn: 1 };
+			let player = { userName: userName, role: '1', conn: 1, vote: 0 };
 			userList.push(player);
 			roomName = 'citizen';
 		}
@@ -130,11 +133,10 @@ io.sockets.on('connection', (socket)=>{
 		// console.log(userList);
 		// console.log(roomName);
 		// console.log(socket.room);
-		// 이놈이 문제네.
-		// socket.id = userNameChecked;
-		// socket.name을 키값으로, socket.id를 value값으로 들고 있는 걸 하나 만들자
 		
+		// socket 찾을 수 있고, 출마하고.
 		idList[socket.name]=socket;
+		
 		
 		//확인
 		// console.log(idList);
@@ -148,29 +150,31 @@ io.sockets.on('connection', (socket)=>{
 		io.sockets.emit('mainNotice', searchValue(socket.name, userList));
 		io.sockets.emit('userList', userList);
 		
-
-		// 마피아일 경우
-		if(roomName =='mafia'){
-			// console.log("마피아 집어넣기");
-			mafiaUserList.push(socket.name);
-			socket.join(roomName);
-			socket.room=roomName;
-			io.to(roomName).emit('subNotice', searchValue(socket.name, userList));
-		}
-
-		// 시체가 될 경우
-		if(roomName =='tomb'){
-			// console.log("시체 집어넣기");
-			deadUserList.push(socket.name);
-			socket.join(roomName);
-			socket.room=roomName;
-			io.to(roomName).emit('subNotice', searchValue(socket.name, userList));
-		}
-		// 쟤네 둘 아니면 그냥 citizen 을 넣자. 
+		// 여기부분 코드가 약간 이상하고 중복이 많음. 고치자. 
+		// 소켓이 속한 방 이름을 넣자. 
 		socket.room=roomName;
+
+		if(socket.room=='mafia'){
+			mafiaUserList.push(socket.name);
+			socket.join('mafia')
+			io.to(socket.room).emit('subNotice', searchValue(socket.name, userList));
+
+		}else if(socket.room=='tomb'){
+			deadUserList.push(socket.name);
+			socket.join('tomb')
+			io.to(socket.room).emit('subNotice', searchValue(socket.name, userList));
+			// 메인 채팅 보기만 할 수 있게 하는 신호 보내기
+			socket.emit('cannotSend', socket.room);
+		// 시민일 때는 서브채팅창을 막자. 
+		}else {
+			socket.emit('cannotSubSend', socket.room);
+		}
+
+		
 		// 들어오는 사람마다 그림 영역 넣기 일단 이름이랑 역할 넣어놓자.
 		// 클릭하면 밴되는 기능에 필요할 지 몰라. 
 		io.sockets.emit('addIcon', userList);
+		onPlayer++;
 
 	});
 
@@ -189,13 +193,46 @@ io.sockets.on('connection', (socket)=>{
 		}
 
 	});
+	
+	
+	
 
 	// kill 요청 받았을 때
 	socket.on('killUser', (data)=>{
-		// 그 사람을 찾아서 
-		console.log(searchValue(data, userList));
-		// 해당 소켓에 방 이동 하라고 보내기. 
-		idList[data].emit('moveRoom', searchValue(data, userList))
+		// 총 투표해야하는 인원
+		console.log("총 투표해야하는 사람 수"+(onPlayer-deadUserList.length))
+		// 객체에 카운트 올리기 
+		searchValue(data, userList).vote += 1;
+		// console.log("득표"+searchValue(data, userList).vote);
+		// 투표수도 추가
+		voteCount +=1;
+		// 당선자도 정의해놓자.
+		let elected;
+		console.log("투표인원 : "+voteCount)
+		// 모두 투표했을 때!
+		if(voteCount==(onPlayer-deadUserList.length)){
+			console.log("개표 실행");
+			// 최다 득표수부터 찾자. 
+			const maxVote = Math.max.apply(Math, userList.map((o)=>{return o.vote}));
+			
+			console.log("최다 득표수 : "+maxVote);
+			// 이제 최다 득표자 찾자. 
+			for(let i=0;i<userList.length;i++){
+				if(userList[i].vote==maxVote){
+					elected = userList[i].userName;
+				}
+			}
+			// 이제 그사람에게 방빼라고 전하자. 
+			idList[elected].emit('moveRoom', searchValue(elected, userList));
+			// 투표함 비우자. 
+			for(let i=0;i<userList.length;i++){
+				if(userList[i].vote!=0){
+					userList[i].vote=0;
+				}
+			}
+			// 투표인원도 초기화
+			voteCount=0;
+		}
 		
 	});
 	// 어떤 소켓이 방 이동한다고(죽었다고 보냄)
@@ -204,12 +241,16 @@ io.sockets.on('connection', (socket)=>{
 		console.log(socket.name);
 		//자신의 역할이 mafia 였다면 그 방에서 나오게 해야 함.
 		if(searchValue(socket.name, userList).role=="2"){
+			//마피아 리스트에서도 삭제.
+			mafiaUserList.splice(mafiaUserList.indexOf(socket.name),1);
 			socket.leave('mafia');
+			// 방 리셋
+			socket.emit('resetChat','reset');
 		}
 		// 시체로 바꾸기
-		console.log(searchValue(socket.name, userList));
+		// console.log(searchValue(socket.name, userList));
 		searchValue(socket.name, userList).role="3";
-		console.log(searchValue(socket.name, userList));
+		// console.log(searchValue(socket.name, userList));
 
 		// 시체 유저 리스트에 추가
 		deadUserList.push(socket.name);
@@ -221,6 +262,12 @@ io.sockets.on('connection', (socket)=>{
 		io.to('tomb').emit('subNotice', searchValue(data, userList));
 		// 아이콘도 변경하자. 
 		io.sockets.emit('addIcon', userList);
+		// 죽은 사람 빼고 모두에게 현 원 표시 
+		socket.broadcast.emit('reportNow', {citizen: (onPlayer-mafiaUserList.length-deadUserList.length), mafia: mafiaUserList.length});
+		// 메인 채팅 보기만 할 수 있게 하는 신호 보내기
+		socket.emit('cannotSend', socket.room);
+		// 서브채팅 다시 쓸 수 있게 신호 보내기 
+		socket.emit('cannotSubSend', socket.room);
 	});
 
 
@@ -232,9 +279,9 @@ io.sockets.on('connection', (socket)=>{
 		console.log(userList);
 		io.sockets.emit('mainNotice', searchValue(socket.name, userList));
 		io.sockets.emit('userList', userList);
+		io.sockets.emit('addIcon', userList);
 		socket.leave('citizen');
-		//특정 역할일 경우 그 방에서 나가는 것도 구현하자.
-
+		onPlayer--;
 	});
 
 

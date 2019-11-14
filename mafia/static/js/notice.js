@@ -72,6 +72,12 @@ socket.on('subNotice', (data)=>{
 	chatLine.appendChild(node);
 	subChat.appendChild(chatLine);
 });
+
+socket.on('reportNow', (data)=>{
+	const citizenNum = data.citizen;
+	const mafiaNum = data.mafia;
+	alert(`현재 시민은 ${citizenNum}명, 마피아는 ${mafiaNum}명 남았습니다.`)
+})
 	
 // 스크롤 밑으로 
 function gotoBottom(cls){

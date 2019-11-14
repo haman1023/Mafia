@@ -102,7 +102,12 @@ function killUser(){
 		// 서버로 킬 요청 보내자.
 		socket.emit('killUser', voteResult[0]);
 		// 보내고 나면 초기화!!
-
+		voteResult = [];
+		// 선택된 userDiv를 선택 안됨 상태로 .
+		// const selectedUserDiv = document.getElementsByClassName('selectedUser');
+		// // 하나 뿐이니까.
+		// selectedUserDiv[0].classList.toggle("selectedUser");
+		// selectedUserDiv[0].classList.toggle("user");
 	}
 	
 }
