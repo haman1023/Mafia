@@ -23,6 +23,7 @@ const io = socket(server);
 app.use(express.static('static'))
 
 /* Get 방식으로 / 경로에 접속하면 실행 됨 */
+
 app.get('/', (req, res) => {
 	fs.readFile('./static/index.html', (err, data) => {
 		if (err) {
@@ -34,6 +35,18 @@ app.get('/', (req, res) => {
 		}
 	});
 });
+
+// app.get('/main', (req, res) => {
+// 	fs.readFile('./static/main.html', (err, data) => {
+// 		if (err) {
+// 			res.send('에러');
+// 		}else {
+// 			res.writeHead(200, {'Content-Type':'text/html'})
+// 			res.write(data);
+// 			res.end();
+// 		}
+// 	});
+// });
 
 // 유저 목록들 설정하기 
 // 모든 유저 목록

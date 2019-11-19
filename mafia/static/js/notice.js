@@ -1,3 +1,8 @@
+// let socket = io();
+// 일단 소켓 이름부터 저장하자. 
+socket.on('setName', (data)=>{
+	socket.name=data;
+});
 // 메인 채팅 창 공지사항 뿌리기
 socket.on('mainNotice', (data)=>{
 	console.log(data);
