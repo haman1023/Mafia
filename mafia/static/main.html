@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Mafia 기본틀</title>
+    <script type="text/javascript"></script>
+    <link rel="stylesheet" href="./css/index.css">
+    <script src="/socket.io/socket.io.js"></script>
+  </head>
+  <body>
+    <div id='wrap'>
+      <div id='mainDiv'>
+        <div class="user_list"></div>
+        <div class="main_chat"></div>
+        <div class="main_input">
+          <input type="text" class="main_chat_text">
+          <button class="main_chat_send">입력</button>
+				</div>
+      </div>
+      <div id='subDiv'>
+        <div class="sub_chat"></div>
+        <div class="sub_input">
+            <input type="text" class="sub_chat_text">
+            <button class="sub_chat_send">입력</button>
+        </div>
+      </div>
+      <div id='functionDiv'>
+        <div id='vote'></div>
+        <div id='function'>
+          <button class="voteButton">투표시작</button>
+          기타 기능버튼들
+        </div>
+      </div>
+      <div id='informationDiv'>
+        <table>
+          <thead>
+            <tr>
+              <td colspan="2"><img src='img/mafia.jpg' width='94px' height='94px'/></td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td width="50">ID</td>
+              <td width="100">userID</td>
+            </tr>
+            <tr>
+              <td>이름</td>
+              <td>userName</td>
+            </tr>
+            <tr>
+              <td rowspan="2">전적</td>
+              <td>10승 10패</td>
+            </tr>
+            <tr>
+              <td>(50%)</td>
+            </tr>
+            <tr>
+              <td rowspan="2">마피아</td>
+              <td>1승 1패</td>
+            </tr>
+            <tr>
+              <td>(50%)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- <script src="./js/joinRoom.js"></script> -->
+    <script src="./js/notice.js"></script>
+    <script src="./js/userList.js"></script>
+    <script src="./js/vote.js"></script>
+    <script src="./js/mainChat.js"></script>
+    <script src="./js/subChat.js"></script>
+  </body>
+</html>

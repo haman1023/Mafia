@@ -1,0 +1,168 @@
+div{
+  border: 1px solid black;
+  border-spacing: 0;
+}
+
+#wrap{
+  width:1000px;
+  height:700px;
+  background-color: lightgreen;
+}
+
+#mainDiv{
+  margin:10px 5px 5px 10px;
+  width:682px;
+  height:382px;
+  background-color: pink;
+  float: left;
+}
+#mainDiv .user_list{
+  border: 0px;
+  border-right:1px solid black;
+  width:130px;
+  height:382px;
+  float: left;
+}
+#mainDiv .main_chat{
+  border:0;
+  width:551px;
+  height:350px;
+  float: left;
+  overflow-y: auto;
+}
+
+#mainDiv .main_input{
+  border: 0px;
+  border-top: 1px solid black;
+  width:551px;
+  height:31px;
+  float: left;
+}
+
+#subDiv{
+  margin:10px 10px 5px 5px;
+  width:282px;
+  height:382px;
+  background-color: skyblue;
+  float: left;
+}
+#subDiv .sub_chat{
+  width:282px;
+  height:350px;
+  border:0px;
+  overflow-y: auto;
+}
+#subDiv .sub_input{
+  border:0px;
+  border-top: 1px solid black;
+  width:282px;
+  height:31px;
+}
+
+#functionDiv{
+  margin:5px 5px 10px 10px;
+  width:782px;
+  height:282px;
+  background-color:white;
+  float: left;
+}
+#functionDiv #vote{
+  border:0;
+  width:564px;
+  height:282px;
+  float : left;
+}
+.user{
+  border:0;
+  width:94px;
+  height:94px;
+  background-image: url('../img/mafia.jpg');
+  background-size: 100%;
+  background-repeat: no-repeat;
+  opacity: 0.5;
+  float : left;
+}
+
+.user:hover{
+  opacity: 1.0;
+  cursor: pointer;
+}
+.selectedUser{
+  border:0;
+  width:94px;
+  height:94px;
+  background-image: url('../img/mafia.jpg');
+  background-size: 100%;
+  background-repeat: no-repeat;
+  opacity: 1.0;
+  float : left;
+}
+
+.undead {
+  border:0;
+  width:94px;
+  height:94px;
+  background-image: url('../img/undead.jpg');
+  background-size: 100%;
+  background-repeat: no-repeat;
+  opacity: 0.5;
+  float : left;
+}
+
+#functionDiv #function{
+  border:0;
+  width:218px;
+  height:282px;
+  background-color: lightgray;
+  float : left;
+}
+#functionDiv #function .voteButton{
+  margin : 5px;
+  width:208px;
+  height:100px;
+}
+
+#informationDiv{
+  margin:5px 10px 10px 5px;
+  width:182px;
+  height:282px;
+  background-color: yellow;
+  float: left;
+}
+#informationDiv table{
+  margin: 0 auto;
+}
+
+.login {
+  border: 0;
+  text-align: center;
+  width: 90%;
+  margin: 5px auto;
+  background-color: chartreuse;
+  clear: both;
+}
+
+.logout {
+  border: 0;
+  text-align: center;
+  width: 90%;
+  margin: 5px auto;
+  background-color: darkgray;
+  clear: both;
+}
+
+.my {
+  border: 0;
+  width: 70%;
+  margin: 5px;
+  float: right;
+  background-color: ivory;
+}
+
+.other {
+  border: 0;
+  width: 70%;
+  margin: 5px;
+  float: left;
+  background-color: lavender;
+}
